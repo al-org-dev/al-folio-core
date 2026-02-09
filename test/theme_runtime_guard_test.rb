@@ -26,8 +26,12 @@ class ThemeRuntimeGuardTest < Minitest::Test
   def test_theme_asset_path_points_to_packaged_assets
     tailwind_path = AlFolioCore.theme_asset_path("assets/css/tailwind.css")
     distill_path = AlFolioCore.theme_asset_path("assets/js/distillpub/transforms.v2.js")
+    compat_css_path = AlFolioCore.theme_asset_path("assets/css/bootstrap-compat.css")
+    compat_js_path = AlFolioCore.theme_asset_path("assets/js/bootstrap-compat.js")
 
     assert File.file?(tailwind_path), "expected #{tailwind_path} to exist"
     assert File.file?(distill_path), "expected #{distill_path} to exist"
+    refute File.file?(compat_css_path), "bootstrap compat CSS should be owned by al_folio_bootstrap_compat"
+    refute File.file?(compat_js_path), "bootstrap compat JS should be owned by al_folio_bootstrap_compat"
   end
 end
