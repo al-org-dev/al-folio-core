@@ -36,16 +36,23 @@ module AlFolioCore
 
       files = Dir[local_target_path]
       files = Dir[theme_target_path] if files.empty?
+      if files.empty?
+        files = Gem.path.flat_map do |gem_path|
+          Dir[File.join(gem_path, "bundler", "gems", "*", local_target_path)]
+        end
+      end
 
       files.map { |f| File.read(f) unless File.directory?(f) }.join
     end
 
     def file_content
       local_file_name = file_name.slice((file_name.index("assets/")..-1))
-      theme_file_name = AlFolioCore.theme_asset_path(local_file_name)
+      fallback_paths = [AlFolioCore.theme_asset_path(local_file_name)] + AlFolioCore.bundler_gem_asset_paths(local_file_name)
 
       return File.read(local_file_name) if File.file?(local_file_name)
-      return File.read(theme_file_name) if File.file?(theme_file_name)
+      fallback_paths.each do |fallback_path|
+        return File.read(fallback_path) if File.file?(fallback_path)
+      end
 
       File.read(local_file_name)
     end
@@ -96,6 +103,12 @@ module AlFolioCore
 
   def theme_asset_path(relative_asset_path)
     File.join(THEME_ROOT, relative_asset_path)
+  end
+
+  def bundler_gem_asset_paths(relative_asset_path)
+    Gem.path.flat_map do |gem_path|
+      Dir[File.join(gem_path, "bundler", "gems", "*", relative_asset_path)]
+    end
   end
 
   def local_source_asset?(asset_path, site_source)

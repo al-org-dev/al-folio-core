@@ -34,4 +34,9 @@ class ThemeRuntimeGuardTest < Minitest::Test
     refute File.file?(compat_css_path), "bootstrap compat CSS should be owned by al_folio_bootstrap_compat"
     refute File.file?(compat_js_path), "bootstrap compat JS should be owned by al_folio_bootstrap_compat"
   end
+
+  def test_bundler_gem_asset_paths_can_locate_core_assets
+    paths = AlFolioCore.bundler_gem_asset_paths("assets/css/tailwind.css")
+    assert paths.any? { |path| path.include?("al-folio-core") && File.file?(path) }
+  end
 end
