@@ -8,6 +8,24 @@ module AlFolioCore
   DISTILL_REMOTE_LOADER_PATTERN = %r{https://distill\.pub/template\.v2\.js}
   MIGRATIONS_DIR = File.expand_path("../migrations", __dir__)
 
+  module JekyllTerserThemeGuard
+    def generate(site)
+      site.static_files.clone.each do |sf|
+        next unless sf.kind_of?(Jekyll::StaticFile)
+        next unless sf.path =~ /\.js$/
+        next if sf.path.end_with?(".min.js")
+        next unless AlFolioCore.local_source_asset?(sf.path, site.source)
+
+        puts "Terser: Minifying #{sf.path}"
+        site.static_files.delete(sf)
+        name = File.basename(sf.path)
+        destination = File.dirname(File.expand_path(sf.path)).sub(File.expand_path(site.source), "")
+        js_file = Jekyll::Terser::JSFile.new(site, site.source, destination, name, @terser)
+        site.static_files << js_file
+      end
+    end
+  end
+
   module_function
 
   def compat_enabled?(site)
@@ -51,6 +69,21 @@ module AlFolioCore
     Dir.glob(File.join(MIGRATIONS_DIR, "*.yml")).sort
   end
 
+  def local_source_asset?(asset_path, site_source)
+    expanded_asset_path = File.expand_path(asset_path)
+    expanded_site_source = File.expand_path(site_source)
+    expanded_asset_path.start_with?("#{expanded_site_source}#{File::SEPARATOR}")
+  end
+
+  def patch_jekyll_terser_for_theme_assets!
+    return unless defined?(Jekyll::Terser::TerserGenerator)
+
+    generator = Jekyll::Terser::TerserGenerator
+    return if generator.ancestors.include?(JekyllTerserThemeGuard)
+
+    generator.prepend(JekyllTerserThemeGuard)
+  end
+
   def config_contract_violations(site)
     violations = []
     cfg = site.config
@@ -72,6 +105,8 @@ module AlFolioCore
     violations
   end
 end
+
+AlFolioCore.patch_jekyll_terser_for_theme_assets!
 
 Jekyll::Hooks.register :site, :after_init do |site|
   AlFolioCore.config_contract_violations(site).each do |violation|
