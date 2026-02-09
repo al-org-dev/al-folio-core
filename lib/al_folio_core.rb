@@ -7,6 +7,7 @@ module AlFolioCore
   LEGACY_PATTERN = /data-toggle\s*=\s*["'](?:collapse|dropdown|tooltip|popover|table)["']|\b(?:navbar|card|btn|row|col-(?:xs|sm|md|lg)-\d+)\b/
   DISTILL_REMOTE_LOADER_PATTERN = %r{https://distill\.pub/template\.v2\.js}
   MIGRATIONS_DIR = File.expand_path("../migrations", __dir__)
+  THEME_ROOT = File.expand_path("..", __dir__)
 
   module JekyllTerserThemeGuard
     def generate(site)
@@ -23,6 +24,30 @@ module AlFolioCore
         js_file = Jekyll::Terser::JSFile.new(site, site.source, destination, name, @terser)
         site.static_files << js_file
       end
+    end
+  end
+
+  module JekyllCacheBustThemeFallback
+    private
+
+    def directory_files_content
+      local_target_path = File.join(directory, "**", "*")
+      theme_target_path = File.join(AlFolioCore::THEME_ROOT, local_target_path)
+
+      files = Dir[local_target_path]
+      files = Dir[theme_target_path] if files.empty?
+
+      files.map { |f| File.read(f) unless File.directory?(f) }.join
+    end
+
+    def file_content
+      local_file_name = file_name.slice((file_name.index("assets/")..-1))
+      theme_file_name = AlFolioCore.theme_asset_path(local_file_name)
+
+      return File.read(local_file_name) if File.file?(local_file_name)
+      return File.read(theme_file_name) if File.file?(theme_file_name)
+
+      File.read(local_file_name)
     end
   end
 
@@ -69,6 +94,10 @@ module AlFolioCore
     Dir.glob(File.join(MIGRATIONS_DIR, "*.yml")).sort
   end
 
+  def theme_asset_path(relative_asset_path)
+    File.join(THEME_ROOT, relative_asset_path)
+  end
+
   def local_source_asset?(asset_path, site_source)
     expanded_asset_path = File.expand_path(asset_path)
     expanded_site_source = File.expand_path(site_source)
@@ -82,6 +111,15 @@ module AlFolioCore
     return if generator.ancestors.include?(JekyllTerserThemeGuard)
 
     generator.prepend(JekyllTerserThemeGuard)
+  end
+
+  def patch_jekyll_cache_bust_for_theme_assets!
+    return unless defined?(Jekyll::CacheBust::CacheDigester)
+
+    cache_digester = Jekyll::CacheBust::CacheDigester
+    return if cache_digester.ancestors.include?(JekyllCacheBustThemeFallback)
+
+    cache_digester.prepend(JekyllCacheBustThemeFallback)
   end
 
   def config_contract_violations(site)
@@ -107,6 +145,7 @@ module AlFolioCore
 end
 
 AlFolioCore.patch_jekyll_terser_for_theme_assets!
+AlFolioCore.patch_jekyll_cache_bust_for_theme_assets!
 
 Jekyll::Hooks.register :site, :after_init do |site|
   AlFolioCore.config_contract_violations(site).each do |violation|

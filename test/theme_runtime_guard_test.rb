@@ -22,4 +22,12 @@ class ThemeRuntimeGuardTest < Minitest::Test
     assert_includes scripts, "bootstrap-compat.js' | relative_url | bust_file_cache"
     assert_includes distill_scripts, "bootstrap-compat.js' | relative_url | bust_file_cache"
   end
+
+  def test_theme_asset_path_points_to_packaged_assets
+    tailwind_path = AlFolioCore.theme_asset_path("assets/css/tailwind.css")
+    distill_path = AlFolioCore.theme_asset_path("assets/js/distillpub/transforms.v2.js")
+
+    assert File.file?(tailwind_path), "expected #{tailwind_path} to exist"
+    assert File.file?(distill_path), "expected #{distill_path} to exist"
+  end
 end
