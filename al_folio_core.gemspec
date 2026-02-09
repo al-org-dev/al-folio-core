@@ -24,6 +24,7 @@ Gem::Specification.new do |spec|
     "lib/**/*",
     "migrations/**/*",
     "scripts/**/*",
+    "_scripts/**/*",
     "_includes/**/*",
     "_layouts/**/*",
     "_sass/**/*",
