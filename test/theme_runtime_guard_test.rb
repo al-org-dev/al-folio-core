@@ -44,7 +44,7 @@ class ThemeRuntimeGuardTest < Minitest::Test
     cv_layout = ROOT.join("_layouts/cv.liquid").read
     distill_layout = ROOT.join("_layouts/distill.liquid").read
 
-    assert_includes cv_layout, "{% include cv/render.liquid %}"
-    assert_includes distill_layout, "{% include distill/render.liquid %}"
+    assert_includes cv_layout, "{% al_folio_cv_render %}"
+    assert_includes distill_layout, "{% al_folio_distill_render %}"
   end
 end
