@@ -1,7 +1,6 @@
-{% assign distill_enabled = site.plugins contains 'al_folio_distill' %}
 {% assign distill_feature_enabled = site.al_folio.features.distill.enabled | default: true %}
 
-{% if distill_enabled and distill_feature_enabled %}
+{% if site.plugins contains 'al_folio_distill' and distill_feature_enabled %}
   {% include distill/render.liquid %}
 {% else %}
   <!doctype html>
