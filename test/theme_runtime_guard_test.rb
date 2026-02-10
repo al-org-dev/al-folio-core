@@ -16,27 +16,35 @@ class ThemeRuntimeGuardTest < Minitest::Test
   def test_bootstrap_compat_assets_are_cache_busted
     head = ROOT.join("_includes/head.liquid").read
     scripts = ROOT.join("_includes/scripts.liquid").read
-    distill_scripts = ROOT.join("_includes/distill_scripts.liquid").read
 
     assert_includes head, "bootstrap-compat.css' | relative_url | bust_file_cache"
     assert_includes scripts, "bootstrap-compat.js' | relative_url | bust_file_cache"
-    assert_includes distill_scripts, "bootstrap-compat.js' | relative_url | bust_file_cache"
   end
 
   def test_theme_asset_path_points_to_packaged_assets
     tailwind_path = AlFolioCore.theme_asset_path("assets/css/tailwind.css")
-    distill_path = AlFolioCore.theme_asset_path("assets/js/distillpub/transforms.v2.js")
     compat_css_path = AlFolioCore.theme_asset_path("assets/css/bootstrap-compat.css")
     compat_js_path = AlFolioCore.theme_asset_path("assets/js/bootstrap-compat.js")
+    cv_include_path = AlFolioCore.theme_asset_path("_includes/cv/education.liquid")
+    distill_scripts_include_path = AlFolioCore.theme_asset_path("_includes/distill_scripts.liquid")
 
     assert File.file?(tailwind_path), "expected #{tailwind_path} to exist"
-    assert File.file?(distill_path), "expected #{distill_path} to exist"
     refute File.file?(compat_css_path), "bootstrap compat CSS should be owned by al_folio_bootstrap_compat"
     refute File.file?(compat_js_path), "bootstrap compat JS should be owned by al_folio_bootstrap_compat"
+    refute File.file?(cv_include_path), "cv includes should be owned by al_folio_cv"
+    refute File.file?(distill_scripts_include_path), "distill scripts include should be owned by al_folio_distill"
   end
 
   def test_bundler_gem_asset_paths_can_locate_core_assets
     paths = AlFolioCore.bundler_gem_asset_paths("assets/css/tailwind.css")
     assert paths.any? { |path| path.include?("al-folio-core") && File.file?(path) }
+  end
+
+  def test_wrapper_layouts_delegate_to_plugin_includes
+    cv_layout = ROOT.join("_layouts/cv.liquid").read
+    distill_layout = ROOT.join("_layouts/distill.liquid").read
+
+    assert_includes cv_layout, "{% include cv/render.liquid %}"
+    assert_includes distill_layout, "{% include distill/render.liquid %}"
   end
 end

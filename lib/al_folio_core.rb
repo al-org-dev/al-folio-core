@@ -1,13 +1,77 @@
 # frozen_string_literal: true
 
 require "jekyll"
+require "i18n"
 require_relative "al_folio_core/version"
 
 module AlFolioCore
   LEGACY_PATTERN = /data-toggle\s*=\s*["'](?:collapse|dropdown|tooltip|popover|table)["']|\b(?:navbar|card|btn|row|col-(?:xs|sm|md|lg)-\d+)\b/
-  DISTILL_REMOTE_LOADER_PATTERN = %r{https://distill\.pub/template\.v2\.js}
   MIGRATIONS_DIR = File.expand_path("../migrations", __dir__)
   THEME_ROOT = File.expand_path("..", __dir__)
+
+  module Tags
+    class DetailsTag < Liquid::Block
+      def initialize(tag_name, markup, tokens)
+        super
+        @caption = markup
+      end
+
+      def render(context)
+        site = context.registers[:site]
+        converter = site.find_converter_instance(::Jekyll::Converters::Markdown)
+        caption = converter.convert(@caption).gsub(%r{</?p[^>]*>}, "").chomp
+        body = converter.convert(super(context))
+        "<details><summary>#{caption}</summary>#{body}</details>"
+      end
+    end
+
+    class FileExistsTag < Liquid::Tag
+      def initialize(tag_name, path, tokens)
+        super
+        @path = path
+      end
+
+      def render(context)
+        url = Liquid::Template.parse(@path).render(context)
+        site_source = context.registers[:site].config["source"]
+        file_path = "#{site_source}/#{url}"
+        File.exist?(file_path.strip).to_s
+      end
+    end
+  end
+
+  module Filters
+    module HideCustomBibtex
+      def hideCustomBibtex(input)
+        keywords = @context.registers[:site].config["filtered_bibtex_keywords"]
+        keywords.each do |keyword|
+          input = input.gsub(/^.*\b#{keyword}\b *= *\{.*$\n/, "")
+        end
+
+        input.gsub(/^.*\bauthor\b *= *\{.*$\n/) { |line| line.gsub(/[*†‡§¶‖&^]/, "") }
+      end
+    end
+
+    module CleanString
+      class RemoveAccents
+        I18n.config.available_locales = :en
+
+        attr_accessor :string
+
+        def initialize(string:)
+          self.string = string
+        end
+
+        def digest!
+          I18n.transliterate(string)
+        end
+      end
+
+      def remove_accents(string)
+        RemoveAccents.new(string: string).digest!
+      end
+    end
+  end
 
   module JekyllTerserThemeGuard
     def generate(site)
@@ -62,14 +126,6 @@ module AlFolioCore
 
   def compat_enabled?(site)
     site.config.dig("al_folio", "compat", "bootstrap", "enabled") == true
-  end
-
-  def remote_distill_loader_allowed?(site)
-    site.config.dig("al_folio", "distill", "allow_remote_loader") == true
-  end
-
-  def distill_transforms_path(site)
-    File.join(site.source, "assets", "js", "distillpub", "transforms.v2.js")
   end
 
   def markdown_and_template_files(site)
@@ -159,6 +215,10 @@ end
 
 AlFolioCore.patch_jekyll_terser_for_theme_assets!
 AlFolioCore.patch_jekyll_cache_bust_for_theme_assets!
+Liquid::Template.register_tag("details", AlFolioCore::Tags::DetailsTag)
+Liquid::Template.register_tag("file_exists", AlFolioCore::Tags::FileExistsTag)
+Liquid::Template.register_filter(AlFolioCore::Filters::HideCustomBibtex)
+Liquid::Template.register_filter(AlFolioCore::Filters::CleanString)
 
 Jekyll::Hooks.register :site, :after_init do |site|
   AlFolioCore.config_contract_violations(site).each do |violation|
@@ -167,17 +227,6 @@ Jekyll::Hooks.register :site, :after_init do |site|
 end
 
 Jekyll::Hooks.register :site, :post_read do |site|
-  if !AlFolioCore.remote_distill_loader_allowed?(site)
-    transforms_path = AlFolioCore.distill_transforms_path(site)
-    if File.file?(transforms_path)
-      content = File.read(transforms_path)
-      if content.match?(AlFolioCore::DISTILL_REMOTE_LOADER_PATTERN)
-        rel = transforms_path.sub(%r{^#{Regexp.escape(site.source)}/?}, "")
-        Jekyll.logger.warn("al_folio_core:", "remote Distill loader detected in #{rel} while `al_folio.distill.allow_remote_loader` is false")
-      end
-    end
-  end
-
   unless AlFolioCore.compat_enabled?(site)
     hits = AlFolioCore.legacy_hits(site)
     unless hits.empty?
