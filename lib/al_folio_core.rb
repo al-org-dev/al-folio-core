@@ -5,7 +5,10 @@ require "i18n"
 require_relative "al_folio_core/version"
 
 module AlFolioCore
-  LEGACY_PATTERN = /data-toggle\s*=\s*["'](?:collapse|dropdown|tooltip|popover|table)["']|\b(?:navbar|card|btn|row|col-(?:xs|sm|md|lg)-\d+)\b/
+  LEGACY_PATTERN = /
+    data-(?:toggle|target|dismiss)\s*=\s*["'](?:collapse|dropdown|tooltip|popover|table|modal)["']|
+    \b(?:jumbotron|input-group|form-group|form-row|modal(?:-dialog|-content|-header|-body|-footer)?|carousel(?:-\w+)?|alert(?:-\w+)?|badge-pill|pagination-lg)\b
+  /x
   MIGRATIONS_DIR = File.expand_path("../migrations", __dir__)
   THEME_ROOT = File.expand_path("..", __dir__)
 
