@@ -132,7 +132,7 @@ module AlFolioCore
   end
 
   def markdown_and_template_files(site)
-    roots = %w[_pages _posts _includes _layouts _books _projects _teachings]
+    roots = %w[_pages _includes _layouts]
     roots.flat_map do |root|
       Dir.glob(File.join(site.source, root, "**", "*.{md,markdown,html,liquid}"))
     end
