@@ -78,26 +78,63 @@
   }
 }
 
+.af-pagination,
 .pagination {
-  .page-item {
-    .page-link {
-      color: var(--global-text-color);
-      padding: 0.75rem 1.15rem;
+  display: flex;
+  justify-content: center;
+  padding-left: 0;
+  margin-top: 1.25rem;
+  margin-bottom: 1.5rem;
+  list-style: none;
+}
 
-      &:hover {
-        color: #000;
-      }
-    }
+.af-page-link,
+.pagination .page-link {
+  position: relative;
+  display: block;
+  margin-left: -1px;
+  line-height: 1.25;
+  color: var(--global-text-color);
+  background-color: var(--global-bg-color);
+  border: 1px solid var(--global-divider-color);
+  padding: 0.75rem 1.15rem;
 
-    &.active .page-link {
-      color: #fff;
-      background-color: var(--global-theme-color);
-
-      &:hover {
-        background-color: var(--global-theme-color);
-      }
-    }
+  &:hover {
+    color: #000;
+    text-decoration: none;
+    background-color: color-mix(in srgb, var(--global-theme-color) 10%, transparent);
   }
+}
+
+.af-page-item:first-child .af-page-link,
+.pagination .page-item:first-child .page-link {
+  margin-left: 0;
+  border-top-left-radius: 0.3rem;
+  border-bottom-left-radius: 0.3rem;
+}
+
+.af-page-item:last-child .af-page-link,
+.pagination .page-item:last-child .page-link {
+  border-top-right-radius: 0.3rem;
+  border-bottom-right-radius: 0.3rem;
+}
+
+.af-page-item.active .af-page-link,
+.pagination .page-item.active .page-link {
+  color: #fff;
+  background-color: var(--global-theme-color);
+  border-color: var(--global-theme-color);
+
+  &:hover {
+    background-color: var(--global-theme-color);
+  }
+}
+
+.af-page-item.disabled .af-page-link,
+.pagination .page-item.disabled .page-link {
+  color: var(--global-text-color-light);
+  pointer-events: none;
+  background-color: var(--global-bg-color);
 }
 
 .post {
