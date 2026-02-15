@@ -173,7 +173,14 @@ module AlFolioCore
   def local_source_asset?(asset_path, site_source)
     expanded_asset_path = File.expand_path(asset_path)
     expanded_site_source = File.expand_path(site_source)
-    expanded_asset_path.start_with?("#{expanded_site_source}#{File::SEPARATOR}")
+    return false unless expanded_asset_path.start_with?("#{expanded_site_source}#{File::SEPARATOR}")
+
+    # Bundler-installed gems can live under `<site>/vendor/bundle/**`.
+    # Treat those as external runtime assets, not local source overrides.
+    vendored_bundle_prefix = File.join(expanded_site_source, "vendor", "bundle") + File::SEPARATOR
+    return false if expanded_asset_path.start_with?(vendored_bundle_prefix)
+
+    true
   end
 
   def patch_jekyll_terser_for_theme_assets!
