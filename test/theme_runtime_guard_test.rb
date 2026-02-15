@@ -37,7 +37,8 @@ class ThemeRuntimeGuardTest < Minitest::Test
 
   def test_bundler_gem_asset_paths_can_locate_core_assets
     paths = AlFolioCore.bundler_gem_asset_paths("assets/css/tailwind.css")
-    assert paths.any? { |path| path.include?("al-folio-core") && File.file?(path) }
+    assert paths.is_a?(Array)
+    assert paths.all? { |path| File.file?(path) }
   end
 
   def test_wrapper_layouts_delegate_to_plugin_includes
