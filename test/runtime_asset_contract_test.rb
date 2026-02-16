@@ -12,18 +12,23 @@ class RuntimeAssetContractTest < Minitest::Test
     assert_includes content, "https://giscus.app/client.js"
   end
 
-  def test_cookie_consent_setup_include_is_shipped
-    path = ROOT.join("_includes/plugins/al_cookie_consent_setup.liquid")
-    assert path.file?, "expected #{path} to exist"
+  def test_cookie_plugin_wrappers_are_shipped
+    styles_wrapper = ROOT.join("_includes/plugins/al_cookie_styles.liquid")
+    scripts_wrapper = ROOT.join("_includes/plugins/al_cookie_scripts.liquid")
 
-    content = path.read
-    assert_includes content, "window.CookieConsent.run"
-    assert_includes content, "window.gtag"
+    assert styles_wrapper.file?, "expected #{styles_wrapper} to exist"
+    assert scripts_wrapper.file?, "expected #{scripts_wrapper} to exist"
+    assert_includes styles_wrapper.read, "{% al_cookie_styles %}"
+    assert_includes scripts_wrapper.read, "{% al_cookie_scripts %}"
   end
 
-  def test_scripts_include_uses_inline_cookie_consent_setup
+  def test_scripts_include_uses_cookie_plugin_wrapper
     scripts_include = ROOT.join("_includes/scripts.liquid").read
-    assert_includes scripts_include, "{% include plugins/al_cookie_consent_setup.liquid %}"
-    refute_includes scripts_include, "/assets/js/cookie-consent-setup.js"
+    assert_includes scripts_include, "{% include plugins/al_cookie_scripts.liquid %}"
+  end
+
+  def test_head_include_uses_cookie_plugin_wrapper
+    head_include = ROOT.join("_includes/head.liquid").read
+    assert_includes head_include, "{% include plugins/al_cookie_styles.liquid %}"
   end
 end

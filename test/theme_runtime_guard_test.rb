@@ -4,6 +4,28 @@ require_relative "test_helper"
 require "al_folio_core"
 
 class ThemeRuntimeGuardTest < Minitest::Test
+  LEGACY_OR_PLUGIN_OWNED_ASSETS = %w[
+    assets/css/bootstrap-toc.min.css
+    assets/css/bootstrap.min.css
+    assets/css/mdb.min.css
+    assets/css/tikzjax.min.css
+    assets/js/bootstrap-toc.min.js
+    assets/js/bootstrap.bundle.min.js
+    assets/js/chartjs-setup.js
+    assets/js/diff2html-setup.js
+    assets/js/echarts-setup.js
+    assets/js/leaflet-setup.js
+    assets/js/mathjax-setup.js
+    assets/js/mermaid-setup.js
+    assets/js/newsletter.js
+    assets/js/plotly-setup.js
+    assets/js/pseudocode-setup.js
+    assets/js/search-setup.js
+    assets/js/shortcut-key.js
+    assets/js/tikzjax.min.js
+    assets/js/vega-setup.js
+  ].freeze
+
   def test_local_source_asset_detection
     site_source = "/tmp/site"
     local_path = "/tmp/site/assets/js/app.js"
@@ -49,5 +71,20 @@ class ThemeRuntimeGuardTest < Minitest::Test
 
     assert_includes cv_layout, "{% al_folio_cv_render %}"
     assert_includes distill_layout, "{% al_folio_distill_render %}"
+  end
+
+  def test_legacy_and_plugin_owned_assets_are_not_packaged_by_core
+    LEGACY_OR_PLUGIN_OWNED_ASSETS.each do |asset_path|
+      refute ROOT.join(asset_path).file?, "expected #{asset_path} to be removed from al_folio_core"
+    end
+  end
+
+  def test_jupyter_plugin_detection_and_command_checks
+    enabled_site = Struct.new(:config).new({ "plugins" => ["jekyll-jupyter-notebook"] })
+    disabled_site = Struct.new(:config).new({ "plugins" => ["jekyll-feed"] })
+
+    assert AlFolioCore.jupyter_plugin_enabled?(enabled_site)
+    refute AlFolioCore.jupyter_plugin_enabled?(disabled_site)
+    assert AlFolioCore.command_available?("ruby")
   end
 end

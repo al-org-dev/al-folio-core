@@ -46,7 +46,8 @@ module AlFolioCore
   module Filters
     module HideCustomBibtex
       def hideCustomBibtex(input)
-        keywords = @context.registers[:site].config["filtered_bibtex_keywords"]
+        input = input.to_s
+        keywords = Array(@context.registers[:site].config["filtered_bibtex_keywords"]).compact
         keywords.each do |keyword|
           input = input.gsub(/^.*\b#{keyword}\b *= *\{.*$\n/, "")
         end
@@ -113,15 +114,20 @@ module AlFolioCore
     end
 
     def file_content
-      local_file_name = file_name.slice((file_name.index("assets/")..-1))
-      fallback_paths = [AlFolioCore.theme_asset_path(local_file_name)] + AlFolioCore.bundler_gem_asset_paths(local_file_name)
+      asset_index = file_name.index("assets/")
+      local_file_name = asset_index ? file_name.slice(asset_index..-1) : file_name
+      relative_file_name = local_file_name.sub(%r{^/+}, "")
+      candidate_paths = [
+        file_name,
+        local_file_name,
+        AlFolioCore.theme_asset_path(relative_file_name)
+      ] + AlFolioCore.bundler_gem_asset_paths(relative_file_name)
 
-      return File.read(local_file_name) if File.file?(local_file_name)
-      fallback_paths.each do |fallback_path|
-        return File.read(fallback_path) if File.file?(fallback_path)
+      candidate_paths.uniq.each do |candidate_path|
+        return File.read(candidate_path) if File.file?(candidate_path)
       end
 
-      File.read(local_file_name)
+      File.read(file_name)
     end
   end
 
@@ -201,6 +207,20 @@ module AlFolioCore
     cache_digester.prepend(JekyllCacheBustThemeFallback)
   end
 
+  def jupyter_plugin_enabled?(site)
+    Array(site.config["plugins"]).map(&:to_s).include?("jekyll-jupyter-notebook")
+  end
+
+  def command_available?(command)
+    path_entries = ENV.fetch("PATH", "").split(File::PATH_SEPARATOR)
+    return false if path_entries.empty?
+
+    path_entries.any? do |path_entry|
+      candidate = File.join(path_entry, command)
+      File.file?(candidate) && File.executable?(candidate)
+    end
+  end
+
   def config_contract_violations(site)
     violations = []
     cfg = site.config
@@ -233,6 +253,13 @@ Liquid::Template.register_filter(AlFolioCore::Filters::CleanString)
 Jekyll::Hooks.register :site, :after_init do |site|
   AlFolioCore.config_contract_violations(site).each do |violation|
     Jekyll.logger.warn("al_folio_core:", violation)
+  end
+
+  if AlFolioCore.jupyter_plugin_enabled?(site) && !AlFolioCore.command_available?("jupyter-nbconvert")
+    Jekyll.logger.warn("al_folio_core:", "jekyll-jupyter-notebook is enabled but `jupyter-nbconvert` is not on PATH.")
+    Jekyll.logger.warn("al_folio_core:", "Notebook rendering will be skipped for Jupyter posts until Python deps are installed.")
+    Jekyll.logger.warn("al_folio_core:", "Install with `python3 -m pip install --user jupyter nbconvert`")
+    Jekyll.logger.warn("al_folio_core:", "or run starter helper `./bin/setup-python-deps` if available.")
   end
 end
 

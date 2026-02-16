@@ -141,13 +141,7 @@
   {% include plugins/al_math_styles.liquid %}
 {% endif %}
 
-{% if site.enable_cookie_consent %}
+{% if site.enable_cookie_consent and site.plugins contains 'al_cookie' %}
   <!-- Cookie Consent -->
-  <link
-    defer
-    rel="stylesheet"
-    href="{{ site.third_party_libraries.vanilla-cookieconsent.url.css }}"
-    integrity="{{ site.third_party_libraries.vanilla-cookieconsent.integrity.css }}"
-    crossorigin="anonymous"
-  >
+  {% include plugins/al_cookie_styles.liquid %}
 {% endif %}
