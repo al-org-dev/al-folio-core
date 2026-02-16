@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.1 - 2026-02-16
+
+- Fixed cache-bust asset lookup to resolve plugin assets from both Bundler git paths (`bundler/gems/*`) and RubyGems install paths (`gems/*`).
+- Added runtime guard coverage for RubyGems-installed plugin asset resolution.
+
 ## 1.1.0 - 2026-02-10
 
 - Delegated CV and Distill rendering to `al_folio_cv` and `al_folio_distill`.

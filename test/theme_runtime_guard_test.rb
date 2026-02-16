@@ -2,6 +2,8 @@
 
 require_relative "test_helper"
 require "al_folio_core"
+require "fileutils"
+require "tmpdir"
 
 class ThemeRuntimeGuardTest < Minitest::Test
   LEGACY_OR_PLUGIN_OWNED_ASSETS = %w[
@@ -63,6 +65,28 @@ class ThemeRuntimeGuardTest < Minitest::Test
     paths = AlFolioCore.bundler_gem_asset_paths("assets/css/tailwind.css")
     assert paths.is_a?(Array)
     assert paths.all? { |path| File.file?(path) }
+  end
+
+  def test_bundler_gem_asset_paths_supports_rubygems_and_bundler_layouts
+    Dir.mktmpdir do |tmp_dir|
+      bundler_path = File.join(tmp_dir, "bundler", "gems", "al_folio_distill-1.0.0", "assets", "css")
+      rubygems_path = File.join(tmp_dir, "gems", "al_folio_cv-1.0.0", "assets", "css")
+      FileUtils.mkdir_p(bundler_path)
+      FileUtils.mkdir_p(rubygems_path)
+      File.write(File.join(bundler_path, "al-folio-distill.css"), "/* distill */")
+      File.write(File.join(rubygems_path, "al-folio-cv.css"), "/* cv */")
+
+      original_gem_path = Gem.path
+      Gem.singleton_class.send(:define_method, :path) { [tmp_dir] }
+
+      distill_paths = AlFolioCore.bundler_gem_asset_paths("assets/css/al-folio-distill.css")
+      cv_paths = AlFolioCore.bundler_gem_asset_paths("assets/css/al-folio-cv.css")
+
+      assert_equal [File.join(bundler_path, "al-folio-distill.css")], distill_paths
+      assert_equal [File.join(rubygems_path, "al-folio-cv.css")], cv_paths
+    ensure
+      Gem.singleton_class.send(:define_method, :path) { original_gem_path }
+    end
   end
 
   def test_wrapper_layouts_delegate_to_plugin_includes

@@ -106,7 +106,8 @@ module AlFolioCore
       files = Dir[theme_target_path] if files.empty?
       if files.empty?
         files = Gem.path.flat_map do |gem_path|
-          Dir[File.join(gem_path, "bundler", "gems", "*", local_target_path)]
+          Dir[File.join(gem_path, "bundler", "gems", "*", local_target_path)] +
+            Dir[File.join(gem_path, "gems", "*", local_target_path)]
         end
       end
 
@@ -172,7 +173,8 @@ module AlFolioCore
 
   def bundler_gem_asset_paths(relative_asset_path)
     Gem.path.flat_map do |gem_path|
-      Dir[File.join(gem_path, "bundler", "gems", "*", relative_asset_path)]
+      Dir[File.join(gem_path, "bundler", "gems", "*", relative_asset_path)] +
+        Dir[File.join(gem_path, "gems", "*", relative_asset_path)]
     end
   end
 
