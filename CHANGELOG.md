@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.2 - 2026-02-17
+
+- Extracted icon runtime ownership from core into plugin include wrappers.
+- Removed duplicated search runtime payload ownership from core (`assets/js/search/**`).
+- Switched back-to-top runtime to pinned CDN contract and fixed script load ordering.
+- Replaced opaque `tabs.min.js` with provenance-tracked `tabs.js`.
+
 ## 1.0.1 - 2026-02-16
 
 - Fixed cache-bust asset lookup to resolve plugin assets from both Bundler git paths (`bundler/gems/*`) and RubyGems install paths (`gems/*`).
