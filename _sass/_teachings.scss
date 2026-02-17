@@ -63,6 +63,24 @@
 
 .course-schedule {
   margin-bottom: 30px;
+
+  table.table {
+    margin-top: 0.75rem;
+  }
+
+  table.table thead th {
+    background-color: color-mix(in srgb, var(--global-theme-color) 12%, transparent);
+    border-top: 0;
+    border-bottom: 1px solid var(--global-divider-color);
+    color: var(--global-text-color);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    padding: 0.7rem 1rem;
+  }
+
+  table.table tbody td {
+    padding: 0.72rem 1rem;
+  }
 }
 
 .schedule-description {

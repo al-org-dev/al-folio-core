@@ -60,6 +60,19 @@
     crossorigin="anonymous"
   ></script>
 {% endif %}
+{% if page.pretty_table and site.al_folio.compat.bootstrap.enabled != true %}
+  <script defer src="{{ '/assets/js/table-engine.js' | relative_url | bust_file_cache }}" type="text/javascript"></script>
+{% endif %}
+
+{% if page.toc and page.toc.sidebar %}
+  <!-- Tocbot -->
+  <script
+    defer
+    src="{{ site.third_party_libraries.tocbot.url.js }}"
+    integrity="{{ site.third_party_libraries.tocbot.integrity.js }}"
+    crossorigin="anonymous"
+  ></script>
+{% endif %}
 
 <!-- Load Common JS -->
 <script src="{{ '/assets/js/no_defer.js' | relative_url | bust_file_cache }}"></script>

@@ -33,6 +33,17 @@
   >
 {% endif %}
 
+{% if page.toc and page.toc.sidebar %}
+  <!-- Tocbot -->
+  <link
+    defer
+    rel="stylesheet"
+    href="{{ site.third_party_libraries.tocbot.url.css }}"
+    integrity="{{ site.third_party_libraries.tocbot.integrity.css }}"
+    crossorigin="anonymous"
+  >
+{% endif %}
+
 <!-- Icons -->
 {% if site.plugins contains 'al_icons' %}
   {% include plugins/al_icons_styles.liquid %}

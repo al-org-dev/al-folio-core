@@ -177,29 +177,151 @@ html.transition *:after {
   }
 }
 
+// Tailwind table engine
+
+.af-table-shell {
+  margin: 1.1rem 0 1.4rem;
+}
+
+.af-table-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+  margin-bottom: 0.6rem;
+}
+
+.af-table-search {
+  min-width: min(300px, 100%);
+  max-width: 100%;
+  border: 1px solid var(--global-divider-color);
+  border-radius: 0.4rem;
+  background-color: var(--global-bg-color);
+  color: var(--global-text-color);
+  font-size: 0.94rem;
+  line-height: 1.4;
+  padding: 0.42rem 0.72rem;
+}
+
+.af-table-search:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--global-theme-color) 35%, transparent);
+  outline-offset: 1px;
+}
+
+.af-table-pagination {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.af-table-page-info {
+  color: var(--global-text-color);
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-right: 0.3rem;
+}
+
+.af-table-pagination button {
+  border: 1px solid var(--global-divider-color);
+  background-color: transparent;
+  border-radius: 0.35rem;
+  color: var(--global-text-color);
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  line-height: 1;
+  min-width: 2rem;
+  padding: 0.38rem 0.56rem;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.af-table-pagination button:hover:not(:disabled) {
+  background-color: var(--global-theme-color);
+  border-color: var(--global-theme-color);
+  color: var(--global-hover-text-color);
+}
+
+.af-table-pagination button:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+table[data-toggle="table"].af-table-enhanced {
+  margin-bottom: 0;
+}
+
+table[data-toggle="table"].af-table-enhanced thead th {
+  background-color: color-mix(in srgb, var(--global-theme-color) 12%, transparent);
+  border-bottom: 1px solid var(--global-divider-color);
+  color: var(--global-text-color);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+table[data-toggle="table"].af-table-enhanced th.af-sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+table[data-toggle="table"].af-table-enhanced th.af-sortable:hover {
+  color: var(--global-hover-color);
+}
+
+table[data-toggle="table"].af-table-enhanced tbody tr.af-row-selected {
+  background-color: color-mix(in srgb, var(--global-theme-color) 12%, transparent);
+}
+
 // Table of Contents
 
-nav[data-toggle="toc"] {
+#toc-sidebar {
+  z-index: 1;
   top: 5rem;
+  padding-left: 0.35rem;
+  border-left: 1px solid var(--global-divider-color);
 
-  .nav .nav > li > a {
-    font-size: 0.75rem;
+  .toc-list {
+    list-style: none;
+    margin: 0;
+    padding-left: 0;
   }
 
-  .nav > li > a {
+  .toc-list .toc-list {
+    border-left: 1px solid color-mix(in srgb, var(--global-divider-color) 85%, transparent);
+    margin-top: 0.15rem;
+    margin-left: 0.2rem;
+    padding-left: 0.75rem;
+  }
+
+  .toc-link {
     color: var(--global-text-color);
-    font-size: 0.75rem;
+    display: block;
+    font-size: 0.82rem;
+    line-height: 1.38;
+    margin: 0.12rem 0;
+    padding: 0.13rem 0.4rem 0.13rem 0.55rem;
+    border-left: 2px solid transparent;
+    transition:
+      border-color 0.2s ease,
+      color 0.2s ease,
+      transform 0.2s ease;
 
     &:hover {
       color: var(--global-hover-color);
       border-left-color: var(--global-hover-color);
+      text-decoration: none;
+      transform: translateX(2px);
     }
   }
 
-  .nav-link.active {
+  .toc-link.is-active-link {
     color: var(--global-theme-color);
     border-left-color: var(--global-theme-color);
-    font-size: 0.75rem;
+    font-weight: 600;
+    transform: translateX(3px);
 
     &:hover {
       color: var(--global-hover-color);
@@ -211,7 +333,7 @@ nav[data-toggle="toc"] {
 /* small screens */
 @media (max-width: 576px) {
   /* override stickyness so that the navigation does not follow scrolling */
-  nav[data-toggle="toc"] {
+  #toc-sidebar {
     visibility: hidden;
     height: 0;
     top: 0;
@@ -446,10 +568,6 @@ nav[data-toggle="toc"] {
   z-index: 999;
 }
 
-#toc-sidebar {
-  z-index: 1;
-}
-
 .echarts {
   height: 400px;
   width: 100%;
@@ -574,18 +692,58 @@ figure.cover {
 // Calendar
 
 .calendar-toggle-btn {
-  background-color: #007acc;
-  color: white;
-  padding: 0.5em 1em;
-  border: none;
-  border-radius: 6px;
-  font-size: 1em;
+  align-items: center;
+  background-color: transparent;
+  border: 1px solid var(--global-theme-color);
+  border-radius: 999px;
+  color: var(--global-theme-color);
   cursor: pointer;
-  transition: background-color 0.3s;
+  display: inline-flex;
+  font-size: 0.92rem;
+  font-weight: 600;
+  gap: 0.25rem;
+  padding: 0.45rem 0.95rem;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.16s ease;
+}
+
+.calendar-toggle-btn:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--global-theme-color) 45%, transparent);
+  outline-offset: 2px;
 }
 
 .calendar-toggle-btn:hover {
-  background-color: #005fa3;
+  background-color: color-mix(in srgb, var(--global-theme-color) 14%, transparent);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.09);
+  color: var(--global-theme-color);
+  transform: translateY(-1px);
+}
+
+.calendar-toggle-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.calendar-toggle-btn[aria-pressed="true"],
+.calendar-toggle-btn.is-open {
+  background-color: var(--global-theme-color);
+  color: var(--global-hover-text-color);
+  border-color: var(--global-theme-color);
+}
+
+.calendar-toggle-btn[aria-pressed="true"]:hover,
+.calendar-toggle-btn.is-open:hover {
+  background-color: var(--global-hover-color);
+  border-color: var(--global-hover-color);
+  color: var(--global-hover-text-color);
+}
+
+.calendar-toggle-btn.btn-sm {
+  cursor: pointer;
+  font-size: 0.88rem;
 }
 
 .google-calendar-embed {

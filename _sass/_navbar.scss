@@ -160,6 +160,7 @@
   border: 0;
   background-color: inherit;
   color: var(--global-text-color);
+  cursor: pointer;
   /* Fix footprint to prevent navbar shifting when icon changes */
   width: 2rem;
   height: 2rem;
@@ -183,6 +184,7 @@
   border: 0;
   background-color: inherit;
   color: var(--global-text-color);
+  cursor: pointer;
 
   &:hover {
     color: var(--global-hover-color);
