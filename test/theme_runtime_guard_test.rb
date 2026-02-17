@@ -7,9 +7,11 @@ require "tmpdir"
 
 class ThemeRuntimeGuardTest < Minitest::Test
   LEGACY_OR_PLUGIN_OWNED_ASSETS = %w[
+    assets/css/academicons.min.css
     assets/css/bootstrap-toc.min.css
     assets/css/bootstrap.min.css
     assets/css/mdb.min.css
+    assets/css/scholar-icons.css
     assets/css/tikzjax.min.css
     assets/js/bootstrap-toc.min.js
     assets/js/bootstrap.bundle.min.js
@@ -24,7 +26,9 @@ class ThemeRuntimeGuardTest < Minitest::Test
     assets/js/pseudocode-setup.js
     assets/js/search-setup.js
     assets/js/shortcut-key.js
+    assets/js/tabs.min.js
     assets/js/tikzjax.min.js
+    assets/js/vanilla-back-to-top.min.js
     assets/js/vega-setup.js
   ].freeze
 
@@ -101,6 +105,11 @@ class ThemeRuntimeGuardTest < Minitest::Test
     LEGACY_OR_PLUGIN_OWNED_ASSETS.each do |asset_path|
       refute ROOT.join(asset_path).file?, "expected #{asset_path} to be removed from al_folio_core"
     end
+  end
+
+  def test_plugin_owned_directories_are_not_packaged_by_core
+    refute ROOT.join("assets/js/search").directory?, "search runtime assets are owned by al_search"
+    refute ROOT.join("_sass/font-awesome").directory?, "font-awesome styles are owned by al_icons"
   end
 
   def test_jupyter_plugin_detection_and_command_checks
