@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.3 - 2026-02-17
+
+- Restricted gem packaging to tracked runtime files to prevent accidental inclusion of local/untracked artifacts.
+
 ## 1.0.2 - 2026-02-17
 
 - Extracted icon runtime ownership from core into plugin include wrappers.

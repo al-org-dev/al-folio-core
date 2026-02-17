@@ -20,19 +20,29 @@ Gem::Specification.new do |spec|
     "source_code_uri" => spec.homepage,
   }
 
-  spec.files = Dir[
-    "lib/**/*",
-    "migrations/**/*",
-    "scripts/**/*",
-    "_scripts/**/*",
-    "_includes/**/*",
-    "_layouts/**/*",
-    "_sass/**/*",
-    "assets/**/*",
-    "LICENSE",
-    "README.md",
-    "CHANGELOG.md",
-  ]
+  tracked_files = `git ls-files -z 2>/dev/null`.split("\x0")
+  candidate_files = if tracked_files.empty?
+                      Dir[
+                        "lib/**/*",
+                        "migrations/**/*",
+                        "scripts/**/*",
+                        "_scripts/**/*",
+                        "_includes/**/*",
+                        "_layouts/**/*",
+                        "_sass/**/*",
+                        "assets/**/*",
+                        "LICENSE",
+                        "README.md",
+                        "CHANGELOG.md",
+                      ]
+                    else
+                      tracked_files
+                    end
+  allowed_prefixes = %w[lib/ migrations/ scripts/ _scripts/ _includes/ _layouts/ _sass/ assets/]
+  allowed_literals = %w[LICENSE README.md CHANGELOG.md]
+  spec.files = candidate_files.select do |path|
+    allowed_literals.include?(path) || allowed_prefixes.any? { |prefix| path.start_with?(prefix) }
+  end
   spec.require_paths = ["lib"]
 
   spec.add_dependency "jekyll", ">= 3.9", "< 5.0"
