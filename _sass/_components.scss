@@ -53,6 +53,29 @@ ul.task-list input[type="checkbox"] {
   }
 }
 
+.hoverable {
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.hoverable:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 10px 22px rgba(0, 0, 0, 0.12),
+    0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hoverable {
+    transition: none;
+  }
+
+  .hoverable:hover {
+    transform: none;
+  }
+}
+
 // Profile
 
 .profile {

@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.4 - 2026-02-17
+
+- Fixed related-posts HTML structure to render valid list markup.
+- Restored sidebar TOC behavior and styling via Tocbot runtime integration.
+- Added Tailwind-first vanilla table engine for `pretty_table` pages when Bootstrap compatibility is disabled.
+- Replaced remaining jQuery-dependent runtime scripts (masonry, jupyter link handling) with vanilla JS.
+- Improved project hover lift, teaching calendar toggle UX, and schedule/table styling parity.
+
 ## 1.0.3 - 2026-02-17
 
 - Restricted gem packaging to tracked runtime files to prevent accidental inclusion of local/untracked artifacts.

@@ -45,8 +45,8 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   const tocSidebar = document.querySelector("#toc-sidebar");
+  const contentRoot = document.querySelector('[role="main"]') || document.querySelector("main") || document.body;
   const buildSidebarToc = (tocRoot) => {
-    const contentRoot = document.querySelector("main") || document.body;
     const headings = Array.from(contentRoot.querySelectorAll("h2, h3")).filter((heading) => {
       return !heading.hasAttribute("data-toc-skip");
     });
@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const list = document.createElement("ul");
-    list.className = "nav";
+    list.className = "toc-list";
 
     headings.forEach((heading) => {
       if (!heading.id) {
@@ -68,12 +68,13 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const item = document.createElement("li");
+      item.className = "toc-list-item";
       const link = document.createElement("a");
-      link.className = "nav-link";
+      link.className = "toc-link";
       link.href = `#${heading.id}`;
-      link.textContent = heading.textContent.trim();
+      link.textContent = heading.dataset.tocText || heading.textContent.trim();
       if (heading.tagName.toLowerCase() === "h3") {
-        link.classList.add("ml-4");
+        item.classList.add("is-collapsible");
       }
 
       item.appendChild(link);
@@ -88,8 +89,51 @@ document.addEventListener("DOMContentLoaded", () => {
       heading.setAttribute("data-toc-skip", "");
     });
 
-    if (window.Toc && typeof window.Toc.init === "function") {
-      window.Toc.init(tocSidebar);
+    const headings = Array.from(contentRoot.querySelectorAll("h2, h3")).filter((heading) => !heading.hasAttribute("data-toc-skip"));
+    headings.forEach((heading) => {
+      if (!heading.id) {
+        heading.id = heading.textContent
+          .trim()
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-+|-+$/g, "");
+      }
+    });
+
+    const applyCustomTocLabels = () => {
+      tocSidebar.querySelectorAll(".toc-link").forEach((link) => {
+        const anchor = link.getAttribute("href") || "";
+        const headingId = decodeURIComponent(anchor.replace(/^#/, ""));
+        if (!headingId) {
+          return;
+        }
+        const heading = document.getElementById(headingId);
+        const customText = heading?.dataset?.tocText;
+        if (customText) {
+          link.textContent = customText;
+        }
+      });
+    };
+
+    if (window.tocbot && typeof window.tocbot.init === "function" && headings.length > 0) {
+      if (typeof window.tocbot.destroy === "function") {
+        window.tocbot.destroy();
+      }
+
+      window.tocbot.init({
+        tocSelector: "#toc-sidebar",
+        contentSelector: '[role="main"]',
+        headingSelector: "h2, h3",
+        ignoreSelector: "[data-toc-skip]",
+        hasInnerContainers: true,
+        collapseDepth: 6,
+        orderedList: false,
+        activeLinkClass: "is-active-link",
+        scrollSmooth: true,
+        scrollSmoothOffset: -80,
+        headingsOffset: 80,
+      });
+      applyCustomTocLabels();
     } else {
       buildSidebarToc(tocSidebar);
     }

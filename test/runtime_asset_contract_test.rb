@@ -41,4 +41,36 @@ class RuntimeAssetContractTest < Minitest::Test
     scripts_include = ROOT.join("_includes/scripts.liquid").read
     assert_includes scripts_include, "third_party_libraries['vanilla-back-to-top'].url.js"
   end
+
+  def test_related_posts_include_uses_single_list_wrapper
+    related_posts_include = ROOT.join("_includes/related_posts.liquid").read
+
+    assert_match(/<ul[^>]*>\s*{% for post in related_posts %}/m, related_posts_include)
+    refute_match(/<ul[^>]*><\/ul>/, related_posts_include)
+  end
+
+  def test_toc_contract_uses_tocbot_runtime
+    head_include = ROOT.join("_includes/head.liquid").read
+    scripts_include = ROOT.join("_includes/scripts.liquid").read
+    common_js = ROOT.join("assets/js/common.js").read
+
+    assert_includes head_include, "third_party_libraries.tocbot.url.css"
+    assert_includes scripts_include, "third_party_libraries.tocbot.url.js"
+    assert_includes common_js, "window.tocbot.init"
+  end
+
+  def test_pretty_table_contract_loads_tailwind_engine_when_bootstrap_compat_is_disabled
+    scripts_include = ROOT.join("_includes/scripts.liquid").read
+
+    assert_includes scripts_include, "page.pretty_table and site.al_folio.compat.bootstrap.enabled != true"
+    assert_includes scripts_include, "/assets/js/table-engine.js"
+  end
+
+  def test_core_scripts_do_not_require_jquery
+    masonry_js = ROOT.join("assets/js/masonry.js").read
+    jupyter_js = ROOT.join("assets/js/jupyter_new_tab.js").read
+
+    refute_match(/\$\(/, masonry_js)
+    refute_match(/\$\(/, jupyter_js)
+  end
 end
