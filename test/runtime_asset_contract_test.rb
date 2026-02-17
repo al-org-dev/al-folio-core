@@ -31,4 +31,14 @@ class RuntimeAssetContractTest < Minitest::Test
     head_include = ROOT.join("_includes/head.liquid").read
     assert_includes head_include, "{% include plugins/al_cookie_styles.liquid %}"
   end
+
+  def test_head_include_uses_icons_plugin_wrapper
+    head_include = ROOT.join("_includes/head.liquid").read
+    assert_includes head_include, "{% include plugins/al_icons_styles.liquid %}"
+  end
+
+  def test_back_to_top_uses_cdn_library_contract
+    scripts_include = ROOT.join("_includes/scripts.liquid").read
+    assert_includes scripts_include, "third_party_libraries['vanilla-back-to-top'].url.js"
+  end
 end
