@@ -108,9 +108,9 @@
   %}
   {% assign back_to_top_integrity = site.third_party_libraries['vanilla-back-to-top'].integrity.js %}
   {% if back_to_top_integrity %}
-    <script defer src="{{ back_to_top_js }}" integrity="{{ back_to_top_integrity }}" crossorigin="anonymous"></script>
+    <script src="{{ back_to_top_js }}" integrity="{{ back_to_top_integrity }}" crossorigin="anonymous"></script>
   {% else %}
-    <script defer src="{{ back_to_top_js }}"></script>
+    <script src="{{ back_to_top_js }}"></script>
   {% endif %}
   <script>
     addBackToTop();
