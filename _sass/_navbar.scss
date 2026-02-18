@@ -9,6 +9,34 @@
   border-bottom: 1px solid var(--global-divider-color);
   background-color: var(--global-bg-color);
   opacity: 0.95;
+
+  .navbar-collapse-main {
+    justify-content: flex-end;
+    text-align: right;
+  }
+
+  .navbar-menu-list {
+    margin-left: auto;
+    align-items: center;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .navbar {
+    .navbar-toggler-main {
+      margin-left: auto;
+    }
+
+    .navbar-collapse-main {
+      text-align: left;
+    }
+
+    .navbar-menu-list {
+      margin-left: 0;
+      align-items: flex-start;
+      width: 100%;
+    }
+  }
 }
 
 .navbar .dropdown-menu,

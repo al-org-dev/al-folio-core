@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.5 - 2026-02-18
+
+- Restored right-aligned desktop navbar menu layout with explicit core-owned alignment classes.
+- Matched inline code typography more closely to legacy sizing/weight while preserving code-block styling.
+- Normalized related-post recommendation links to regular font weight.
+- Fixed Tocbot sidebar visual clashes by removing competing custom rails and scoping active/hover indicators cleanly.
+
 ## 1.0.4 - 2026-02-17
 
 - Fixed related-posts HTML structure to render valid list markup.
