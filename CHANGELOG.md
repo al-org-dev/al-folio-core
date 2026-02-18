@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.6 - 2026-02-18
+
+- Removed unnecessary navbar menu cross-axis alignment to keep the theme toggle vertically aligned with adjacent controls.
+- Updated Tocbot sidebar styling to a Tocbot-native single-rail hierarchy (with al-folio colors) and removed custom per-link ridge markers.
+
 ## 1.0.5 - 2026-02-18
 
 - Restored right-aligned desktop navbar menu layout with explicit core-owned alignment classes.
