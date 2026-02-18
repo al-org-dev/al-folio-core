@@ -288,53 +288,38 @@ table[data-toggle="table"].af-table-enhanced tbody tr.af-row-selected {
   top: 5rem;
 
   &.toc > .toc-list {
-    overflow: hidden;
-    position: relative;
+    overflow: visible;
+    padding-left: 0.8rem;
   }
 
   .toc-list {
+    border-left: 1px solid color-mix(in srgb, var(--global-divider-color) 80%, transparent);
     list-style: none;
-    margin: 0;
-    padding-left: 0.9rem;
+    margin: 0.1rem 0;
+    padding-left: 0.8rem;
   }
 
   .toc-list .toc-list {
-    margin-top: 0.15rem;
-    margin-left: 0.55rem;
-    padding-left: 0.8rem;
+    margin-top: 0.12rem;
+    margin-left: 0.4rem;
   }
 
   .toc-link {
     color: var(--global-text-color);
     display: block;
-    position: relative;
-    font-size: 0.78rem;
+    font-size: 0.8rem;
     line-height: 1.4;
-    margin: 0.12rem 0;
-    padding: 0.14rem 0.35rem 0.14rem 0.55rem;
-    border-left: 0;
+    margin: 0;
+    padding: 0.14rem 0.25rem 0.14rem 0.4rem;
     transition:
       color 0.2s ease,
       font-weight 0.2s ease;
     transform: none;
 
-    &::before {
-      background-color: color-mix(in srgb, var(--global-divider-color) 85%, transparent);
-      bottom: 0;
-      left: 0;
-      margin-top: 0;
-      top: 0;
-      width: 2px;
-    }
-
     &:hover {
       color: var(--global-hover-color);
       text-decoration: none;
       transform: none;
-
-      &::before {
-        background-color: var(--global-hover-color);
-      }
     }
   }
 
@@ -343,16 +328,8 @@ table[data-toggle="table"].af-table-enhanced tbody tr.af-row-selected {
     font-weight: 600;
     transform: none;
 
-    &::before {
-      background-color: var(--global-theme-color);
-    }
-
     &:hover {
       color: var(--global-hover-color);
-
-      &::before {
-        background-color: var(--global-hover-color);
-      }
     }
   }
 }
