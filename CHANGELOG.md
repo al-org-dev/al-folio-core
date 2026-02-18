@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.7 - 2026-02-18
+
+- Fixed Tocbot active indicator color to use al-folio theme color instead of Tocbot default green.
+- Removed extra custom list rail styling from sidebar TOC to avoid duplicated/misaligned ridges.
+- Added frontmatter-driven TOC collapse controls via `toc.collapse` (`expanded` or `auto`) and optional `toc.collapse_depth`.
+
 ## 1.0.6 - 2026-02-18
 
 - Removed unnecessary navbar menu cross-axis alignment to keep the theme toggle vertically aligned with adjacent controls.
