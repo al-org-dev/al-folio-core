@@ -293,20 +293,20 @@ table[data-toggle="table"].af-table-enhanced tbody tr.af-row-selected {
   }
 
   .toc-list {
-    border-left: 1px solid color-mix(in srgb, var(--global-divider-color) 80%, transparent);
     list-style: none;
-    margin: 0.1rem 0;
+    margin: 0;
     padding-left: 0.8rem;
   }
 
   .toc-list .toc-list {
     margin-top: 0.12rem;
-    margin-left: 0.4rem;
+    margin-left: 0;
   }
 
   .toc-link {
     color: var(--global-text-color);
     display: block;
+    position: relative;
     font-size: 0.8rem;
     line-height: 1.4;
     margin: 0;
@@ -316,10 +316,18 @@ table[data-toggle="table"].af-table-enhanced tbody tr.af-row-selected {
       font-weight 0.2s ease;
     transform: none;
 
+    &::before {
+      background-color: color-mix(in srgb, var(--global-divider-color) 80%, transparent) !important;
+    }
+
     &:hover {
       color: var(--global-hover-color);
       text-decoration: none;
       transform: none;
+
+      &::before {
+        background-color: var(--global-hover-color) !important;
+      }
     }
   }
 
@@ -328,8 +336,16 @@ table[data-toggle="table"].af-table-enhanced tbody tr.af-row-selected {
     font-weight: 600;
     transform: none;
 
+    &::before {
+      background-color: var(--global-theme-color) !important;
+    }
+
     &:hover {
       color: var(--global-hover-color);
+
+      &::before {
+        background-color: var(--global-hover-color) !important;
+      }
     }
   }
 }

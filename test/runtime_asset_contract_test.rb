@@ -52,11 +52,15 @@ class RuntimeAssetContractTest < Minitest::Test
   def test_toc_contract_uses_tocbot_runtime
     head_include = ROOT.join("_includes/head.liquid").read
     scripts_include = ROOT.join("_includes/scripts.liquid").read
+    default_layout = ROOT.join("_layouts/default.liquid").read
     common_js = ROOT.join("assets/js/common.js").read
 
     assert_includes head_include, "third_party_libraries.tocbot.url.css"
     assert_includes scripts_include, "third_party_libraries.tocbot.url.js"
     assert_includes common_js, "window.tocbot.init"
+    assert_includes default_layout, "data-toc-collapse"
+    assert_includes default_layout, "data-toc-collapse-depth"
+    assert_includes common_js, "resolveTocCollapseDepth"
   end
 
   def test_pretty_table_contract_loads_tailwind_engine_when_bootstrap_compat_is_disabled

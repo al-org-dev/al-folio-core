@@ -85,6 +85,21 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   if (tocSidebar) {
+    const resolveTocCollapseDepth = () => {
+      const explicitDepth = Number.parseInt(tocSidebar.dataset.tocCollapseDepth || "", 10);
+      if (!Number.isNaN(explicitDepth) && explicitDepth >= 0) {
+        return explicitDepth;
+      }
+
+      const collapseMode = (tocSidebar.dataset.tocCollapse || "expanded").toLowerCase();
+      if (["auto", "scroll", "true", "collapsed"].includes(collapseMode)) {
+        // Keep top-level entries visible and expand nested branches while scrolling.
+        return 3;
+      }
+
+      return 6;
+    };
+
     document.querySelectorAll(".publications h2").forEach((heading) => {
       heading.setAttribute("data-toc-skip", "");
     });
@@ -126,7 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
         headingSelector: "h2, h3",
         ignoreSelector: "[data-toc-skip]",
         hasInnerContainers: true,
-        collapseDepth: 6,
+        collapseDepth: resolveTocCollapseDepth(),
         orderedList: false,
         activeLinkClass: "is-active-link",
         scrollSmooth: true,
