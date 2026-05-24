@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.8 - 2026-05-24
+
+- Fixed book-review inline CSS typos and contained floated cover figures within the article flow.
+
 ## 1.0.7 - 2026-02-18
 
 - Fixed Tocbot active indicator color to use al-folio theme color instead of Tocbot default green.
