@@ -48,6 +48,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "jekyll", ">= 3.9", "< 5.0"
   spec.add_dependency "liquid", ">= 4.0", "< 6.0"
 
-  spec.add_development_dependency "bundler", ">= 2.0", "< 3.0"
+  spec.add_development_dependency "bundler", ">= 2.0", "< 5.0"
   spec.add_development_dependency "rake", "~> 13.0"
 end
