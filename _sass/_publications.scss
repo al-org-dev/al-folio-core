@@ -118,6 +118,30 @@
         }
       }
 
+      // DBLP publication-type colour pills (enabled via site.enable_dblp_pills)
+      // .dblp-col: Bootstrap-compatible flex auto-column; Tailwind's .col-auto is CSS Grid only
+      .dblp-col {
+        flex: 0 0 auto;
+        width: auto;
+        max-width: 100%;
+        padding-left: 5px;
+        padding-right: 5px;
+        position: relative;
+      }
+
+      .dblp-pill {
+        aspect-ratio: 1 / 1;
+        width: 0.75rem;
+        padding: 0;
+
+        &.dblp-article        { background-color: #cf6094; }
+        &.dblp-inproceedings,
+        &.dblp-inbook         { background-color: #5390b8; }
+        &.dblp-misc           { background-color: #878f93; }
+        &.dblp-mastersthesis,
+        &.dblp-phdthesis      { background-color: #33c3ba; }
+      }
+
       .badges {
         padding-bottom: 0.5rem;
         span {
