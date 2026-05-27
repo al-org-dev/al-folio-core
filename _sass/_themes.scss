@@ -63,6 +63,10 @@
     display: none;
   }
 
+  img.invert-on-dark {
+    filter: invert(0);
+  }
+
   #back-to-top {
     color: var(--global-back-to-top-text-color);
     background: var(--global-back-to-top-bg-color);
@@ -119,6 +123,10 @@ html[data-theme="dark"] {
   .only-dark {
     display: block;
   }
+
+  img.invert-on-dark {
+    filter: invert(1);
+  }
 }
 
 html[data-theme-setting="dark"] {
@@ -151,6 +159,12 @@ html[data-theme-setting="light"] {
 
   #light-toggle-light {
     display: inline-block;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme-setting="light"]) img.invert-on-dark {
+    filter: invert(1);
   }
 }
 
