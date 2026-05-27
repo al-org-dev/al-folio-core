@@ -154,6 +154,26 @@ html[data-theme-setting="light"] {
   }
 }
 
+.profile figure {
+  margin: 0;
+}
+
+.profile img.normal {
+  display: block;
+}
+
+.profile img.hover {
+  display: none;
+}
+
+.profile:hover img.normal {
+  display: none;
+}
+
+.profile:hover img.hover {
+  display: block;
+}
+
 .fa-half-sun-moon {
   position: relative;
   display: inline-block;
