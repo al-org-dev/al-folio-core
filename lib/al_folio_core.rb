@@ -100,14 +100,23 @@ module AlFolioCore
 
     def directory_files_content
       local_target_path = File.join(directory, "**", "*")
-      theme_target_path = File.join(AlFolioCore::THEME_ROOT, local_target_path)
+      # jekyll-cache-bust calls `bust_css_cache` with directory "assets/_sass",
+      # but the theme ships its Sass partials at "_sass" (the gem root), not
+      # under "assets/". Without this mapping the glob matches nothing and the
+      # cache-bust digest is the MD5 of an empty string, so main.css is never
+      # re-versioned when the theme styles change. Resolve both the literal
+      # configured path and the "assets/"-stripped theme location.
+      theme_relative_path = File.join(directory.sub(%r{\Aassets/}, ""), "**", "*")
 
       files = Dir[local_target_path]
-      files = Dir[theme_target_path] if files.empty?
+      files = Dir[File.join(AlFolioCore::THEME_ROOT, local_target_path)] if files.empty?
+      files = Dir[File.join(AlFolioCore::THEME_ROOT, theme_relative_path)] if files.empty?
       if files.empty?
         files = Gem.path.flat_map do |gem_path|
           Dir[File.join(gem_path, "bundler", "gems", "*", local_target_path)] +
-            Dir[File.join(gem_path, "gems", "*", local_target_path)]
+            Dir[File.join(gem_path, "gems", "*", local_target_path)] +
+            Dir[File.join(gem_path, "bundler", "gems", "*", theme_relative_path)] +
+            Dir[File.join(gem_path, "gems", "*", theme_relative_path)]
         end
       end
 

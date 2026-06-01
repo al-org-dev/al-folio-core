@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.10 - 2026-06-01
+
+- Replaced leftover jQuery `$(...)` calls with vanilla JS in the publications "N more authors" expander (`_layouts/bib.liquid`) and the responsive-image `onerror` fallback (`_includes/figure.liquid`). Since jQuery was removed in v1 these threw `ReferenceError: $ is not defined` at runtime — the author list never expanded and the broken-image fallback never ran.
+- Fixed `main.css` cache-busting. The theme's `bust_css_cache` digested a non-existent `assets/_sass` directory and therefore always produced the MD5 of an empty string, so `main.css`'s `?v=` query never changed and returning visitors could be served stale CSS after a theme/color update. It now digests the theme's actual `_sass` partials.
+
 ## 1.0.9 - 2026-05-24
 
 - Retried interrupted `jekyll-minifier` file writes so Jupyter notebook conversion does not fail builds with transient `Errno::EINTR`.
