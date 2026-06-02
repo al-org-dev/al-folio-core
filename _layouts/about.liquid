@@ -27,6 +27,15 @@ layout: default
           {% endif %}
           {% capture sizes %}(min-width: {{ site.max_width }}) {{ site.max_width | minus: 30 | times: 0.3}}px, (min-width: 576px)
       30vw, 95vw"{% endcapture %}
+          {% if page.profile['image-hover'] %}
+            {% assign profile_image_hover_path = page.profile['image-hover'] | prepend: 'assets/img/' %}
+            {% assign profile_image_hover_class = profile_image_class | append: ' hover' %}
+            {% assign profile_image_class = profile_image_class | append: ' normal' %}
+            {%
+              include figure.liquid loading="eager" path=profile_image_hover_path class=profile_image_hover_class sizes=sizes alt=page.profile.image
+              cache_bust=true
+            %}
+          {% endif %}
           {%
             include figure.liquid loading="eager" path=profile_image_path class=profile_image_class sizes=sizes alt=page.profile.image
             cache_bust=true
