@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.11 - 2026-06-02
+
+- Added `onerror` handlers to all repository stat-card images (`repo.liquid`, `repo_user.liquid`, `repo_trophies.liquid`). When the external github-readme-stats or github-profile-trophy service is unavailable the entire card is now hidden gracefully instead of showing broken alt-text.
+- Added CSS for `.af-popover` and `.af-tooltip` in `_sass/_utilities.scss`. The vanilla fallback popover/tooltip implementation in `tooltips-setup.js` (used when bootstrap-compat is disabled) creates elements with these class names, but they previously had no positioning or visual styling — making them appear as unstyled, unpositioned text. They are now absolutely positioned, styled with theme colors, and have appropriate z-index.
+
 ## 1.0.10 - 2026-06-01
 
 - Replaced leftover jQuery `$(...)` calls with vanilla JS in the publications "N more authors" expander (`_layouts/bib.liquid`) and the responsive-image `onerror` fallback (`_includes/figure.liquid`). Since jQuery was removed in v1 these threw `ReferenceError: $ is not defined` at runtime — the author list never expanded and the broken-image fallback never ran.
