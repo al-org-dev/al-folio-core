@@ -37,7 +37,23 @@
     }
   }
 }
+@media (max-width: 575.98px) {
+  .navbar {
+    .dropdown-menu {
+      position: static;
+      width: 100%;
+      min-width: 100%;
+      margin-top: 0;
+      text-align: left;
+      box-shadow: none;
+    }
 
+    .dropdown-item {
+      white-space: normal;
+      text-align: left;
+    }
+  }
+}
 .navbar .dropdown-menu,
 .btn-group.dropdown .dropdown-menu {
   background-color: var(--global-bg-color);
