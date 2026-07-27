@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.12 - 2026-07-27
+
+- Switched the default repository/user stat-card service from the unmaintained `github-readme-stats.vercel.app` to the actively maintained `github-stats-extended.vercel.app` fork (`_includes/repository/repo.liquid`, `_includes/repository/repo_user.liquid`). The public github-readme-stats instance has been unreliable for a long time, leaving repository cards blank; the fork is API-compatible, so every existing query parameter (`theme`, `locale`, `show_owner`, `description_lines_count`, `show_icons`) keeps working and the cards render identically. Requested upstream by a github-stats-extended maintainer in alshedivat/al-folio#3629.
+- Stat-card service URLs now resolve through a `default:` fallback instead of interpolating `site.external_services.*` directly. Previously a site without an `external_services` block emitted a relative `/api/pin/?…` URL and every card 404'd; the service is still fully overridable for self-hosting. Applied to the trophy card as well (`_includes/repository/repo_trophies.liquid`), which keeps `github-profile-trophy.vercel.app`.
+- Updated the in-template locale-code documentation links to the fork's `docs/advanced_documentation.md#available-locales`.
+
 ## 1.0.11 - 2026-06-02
 
 - Added `onerror` handlers to all repository stat-card images (`repo.liquid`, `repo_user.liquid`, `repo_trophies.liquid`). When the external github-readme-stats or github-profile-trophy service is unavailable the entire card is now hidden gracefully instead of showing broken alt-text.
