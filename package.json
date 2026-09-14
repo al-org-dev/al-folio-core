@@ -10,8 +10,8 @@
     "@tailwindcss/cli": "^4.3.3",
     "@tailwindcss/postcss": "^4.3.3",
     "@shopify/prettier-plugin-liquid": "^1.11.0",
-    "autoprefixer": "^10.5.4",
-    "postcss": "^8.5.23",
+    "autoprefixer": "^10.5.6",
+    "postcss": "^8.5.28",
     "prettier": "^3.9.6",
     "tailwindcss": "^4.1.18"
   }
