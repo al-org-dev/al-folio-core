@@ -119,6 +119,10 @@ html[data-theme="dark"] {
   .only-dark {
     display: block;
   }
+
+  img.invert-on-dark {
+    filter: invert(1);
+  }
 }
 
 html[data-theme-setting="dark"] {
