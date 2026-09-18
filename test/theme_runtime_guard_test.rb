@@ -37,10 +37,12 @@ class ThemeRuntimeGuardTest < Minitest::Test
     local_path = "/tmp/site/assets/js/app.js"
     gem_path = "/tmp/bundler/gems/al-folio-core-123/assets/js/app.js"
     vendored_bundle_path = "/tmp/site/vendor/bundle/ruby/3.3.0/gems/al_folio_core-1.1.0/assets/js/app.js"
+    local_bundle_path = "/tmp/site/.bundle/ruby/3.3.0/bundler/gems/al-folio-core-1.1.0/assets/js/app.js"
 
     assert AlFolioCore.local_source_asset?(local_path, site_source)
     refute AlFolioCore.local_source_asset?(gem_path, site_source)
     refute AlFolioCore.local_source_asset?(vendored_bundle_path, site_source)
+    refute AlFolioCore.local_source_asset?(local_bundle_path, site_source)
   end
 
   def test_bootstrap_compat_assets_are_cache_busted

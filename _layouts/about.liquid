@@ -56,6 +56,15 @@ layout: default
       {% include latest_posts.liquid %}
     {% endif %}
 
+    <!-- Project highlights -->
+    {% if page.project_highlights %}
+      {% assign highlighted_projects = site.projects | where: 'highlight', true | sort: 'date' | reverse %}
+      {% if highlighted_projects.size > 0 %}
+        <h2>project highlights</h2>
+        {% include project_highlights.liquid projects=highlighted_projects %}
+      {% endif %}
+    {% endif %}
+
     <!-- Selected papers -->
     {% if page.selected_papers %}
       <h2>

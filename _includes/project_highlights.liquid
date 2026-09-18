@@ -1,0 +1,21 @@
+{% if include.projects and include.projects.size > 0 %}
+  <div class="publications">
+    <ol class="bibliography">
+      {% for project in include.projects %}
+        <li>
+          <div class="row">
+            <div class="col col-sm-2 abbr">
+              {% if project.img %}
+                {% include figure.liquid loading="eager" path=project.img sizes="200px" class="preview z-depth-1 rounded" zoomable=true avoid_scaling=true alt=project.img %}
+              {% endif %}
+            </div>
+            <div class="col-sm-8">
+              <div class="title">{{ project.title }}</div>
+              <div class="periodical">{{ project.tagline }}</div>
+            </div>
+          </div>
+        </li>
+      {% endfor %}
+    </ol>
+  </div>
+{% endif %}
