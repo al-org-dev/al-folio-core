@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.16 - 2026-10-10
+
+- Fixed `main.css?v=` not changing when a site edits its own `_sass/` partials (#43). The cache-bust digest looked for partials under `assets/_sass`, fell back to the theme's `_sass`, and stopped there, so a site's local overrides — which compile into the same `main.css` — were never read, and browsers kept serving the stale stylesheet after an edit. The digest now always combines the site's partials (honouring `sass.sass_dir`) with the theme's. Sites without local partials get exactly the digest they had before, so upgrading does not bust anyone's cache.
+- Fixed the related-posts list rendering with browser defaults (#55). `related_posts.liquid` used six Tailwind utilities that were never in the prebuilt `tailwind.css`; it now uses a `.related-posts` class with scoped rules (Tailwind's own values). Rebuilding `tailwind.css` instead would have dropped 171 other selectors, including `.float-right` on the about page.
+- Restored `hr` styling after the Bootstrap removal: `border: 0` and `margin: 1rem 0` before the existing `border-top`, so the browser's default inset border no longer shows on the other three sides (#45, closes #54). Thanks @CalaW.
+
 ## 1.0.15 - 2026-08-03
 
 - Fixed text colour staggering when switching between light and dark themes, which read as a flicker. `color`, `fill` and `stroke` are inherited properties, but the theme-transition rule applied them to `html.transition *`, so every inheriting element ran its own 240ms ease toward a parent whose colour was still animating — convergence compounded once per level of nesting, and deeper text landed visibly later before snapping when the class was removed. Measured on the about page, an `h2 > a` sat at `rgb(50,50,50)` while the paragraph beside it was already at `rgb(130,130,130)`. Those properties are now transitioned once, on the root and on `body`; non-inherited properties keep their per-element transitions. Text now changes uniformly rather than in waves.
