@@ -106,21 +106,38 @@ module AlFolioCore
       # cache-bust digest is the MD5 of an empty string, so main.css is never
       # re-versioned when the theme styles change. Resolve both the literal
       # configured path and the "assets/"-stripped theme location.
-      theme_relative_path = File.join(directory.sub(%r{\Aassets/}, ""), "**", "*")
+      relative_dir = directory.sub(%r{\Aassets/}, "")
+      theme_relative_path = File.join(relative_dir, "**", "*")
 
-      files = Dir[local_target_path]
-      files = Dir[File.join(AlFolioCore::THEME_ROOT, local_target_path)] if files.empty?
+      # A site's own _sass partials shadow the theme's and are compiled into the
+      # same main.css, so they must feed the digest too. They used to be looked
+      # up only as a fallback and never found, so editing a local override left
+      # main.css?v= unchanged and browsers kept serving the stale stylesheet.
+      files = Dir[local_target_path] + site_sass_files(relative_dir) +
+              theme_sass_files(local_target_path, theme_relative_path)
+
+      files.uniq.map { |f| File.read(f) unless File.directory?(f) }.join
+    end
+
+    def site_sass_files(relative_dir)
+      site = Jekyll.sites.last if Jekyll.respond_to?(:sites)
+      source = site ? site.source : Dir.pwd
+      sass_dir = (site && site.config.dig("sass", "sass_dir")) || relative_dir
+
+      Dir[File.join(source, sass_dir, "**", "*")]
+    end
+
+    def theme_sass_files(local_target_path, theme_relative_path)
+      files = Dir[File.join(AlFolioCore::THEME_ROOT, local_target_path)]
       files = Dir[File.join(AlFolioCore::THEME_ROOT, theme_relative_path)] if files.empty?
-      if files.empty?
-        files = Gem.path.flat_map do |gem_path|
-          Dir[File.join(gem_path, "bundler", "gems", "*", local_target_path)] +
-            Dir[File.join(gem_path, "gems", "*", local_target_path)] +
-            Dir[File.join(gem_path, "bundler", "gems", "*", theme_relative_path)] +
-            Dir[File.join(gem_path, "gems", "*", theme_relative_path)]
-        end
-      end
+      return files unless files.empty?
 
-      files.map { |f| File.read(f) unless File.directory?(f) }.join
+      Gem.path.flat_map do |gem_path|
+        Dir[File.join(gem_path, "bundler", "gems", "*", local_target_path)] +
+          Dir[File.join(gem_path, "gems", "*", local_target_path)] +
+          Dir[File.join(gem_path, "bundler", "gems", "*", theme_relative_path)] +
+          Dir[File.join(gem_path, "gems", "*", theme_relative_path)]
+      end
     end
 
     def file_content
