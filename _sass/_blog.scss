@@ -202,3 +202,32 @@
     }
   }
 }
+
+// Related posts (_includes/related_posts.liquid). The list was styled with
+// Tailwind utilities that never made it into the prebuilt tailwind.css, so it
+// rendered with browser defaults. Scoped rules keep it independent of that
+// build; the values are Tailwind's (pl-7, space-y-2, leading-relaxed,
+// decoration-1). See al-org-dev/al-folio-core#55.
+.related-posts {
+  padding-left: 1.75rem;
+
+  li {
+    line-height: 1.625;
+
+    &::marker {
+      color: var(--global-theme-color);
+    }
+
+    + li {
+      margin-top: 0.5rem;
+    }
+  }
+
+  a {
+    text-decoration-thickness: 1px;
+
+    &:hover {
+      color: var(--global-hover-color);
+    }
+  }
+}
