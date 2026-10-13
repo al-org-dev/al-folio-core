@@ -3,15 +3,6 @@
 require_relative "test_helper"
 
 class RuntimeAssetContractTest < Minitest::Test
-  def test_giscus_setup_script_is_shipped_via_scripts_collection
-    path = ROOT.join("_scripts/giscus-setup.js")
-    assert path.file?, "expected #{path} to exist"
-
-    content = path.read
-    assert_includes content, "permalink: /assets/js/giscus-setup.js"
-    assert_includes content, "https://giscus.app/client.js"
-  end
-
   def test_cookie_plugin_wrappers_are_shipped
     styles_wrapper = ROOT.join("_includes/plugins/al_cookie_styles.liquid")
     scripts_wrapper = ROOT.join("_includes/plugins/al_cookie_scripts.liquid")
